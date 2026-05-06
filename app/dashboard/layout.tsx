@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Briefcase, FileText, LogOut } from "lucide-react";
+import { LayoutDashboard, Briefcase, FileText } from "lucide-react";
+import { UserButton } from "@clerk/nextjs";
 
 export default function DashboardLayout({
   children,
@@ -48,16 +49,26 @@ export default function DashboardLayout({
             {navItem("/dashboard/resume", "Resume Analyzer", FileText)}
           </nav>
         </div>
-
-        <button className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500 hover:bg-red-600 transition">
-          <LogOut size={18} />
-          Logout
-        </button>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-10 bg-gradient-to-br from-gray-100 to-gray-200">
-        {children}
+      <main className="flex-1 flex flex-col bg-gradient-to-br from-gray-100 to-gray-200">
+        {/* Header with UserButton */}
+        <header className="flex justify-end items-center p-6 bg-white shadow-sm border-b border-gray-200">
+          <UserButton 
+            afterSignOutUrl="/"
+            appearance={{
+              elements: {
+                avatarBox: "w-10 h-10 border-2 border-indigo-100"
+              }
+            }}
+          />
+        </header>
+        
+        {/* Page Content */}
+        <div className="flex-1 p-10">
+          {children}
+        </div>
       </main>
     </div>
   );

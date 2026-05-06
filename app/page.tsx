@@ -8,7 +8,7 @@ export default function Home() {
       </h1>
 
       <Link
-        href="/login"
+        href="/sign-in"
         className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-200"
       >
         Go to Login
