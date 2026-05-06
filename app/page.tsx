@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Target, BrainCircuit, FileCheck, Sparkles, ArrowRight, CheckCircle, Star, ChevronRight, Rocket } from "lucide-react";
+import { Target, BrainCircuit, FileCheck, Sparkles, ArrowRight, CheckCircle, Star, ChevronRight, Rocket, Github } from "lucide-react";
 
 export default function Home() {
   return (
@@ -33,12 +33,41 @@ export default function Home() {
           <a href="#how-it-works" className="hover:text-teal-300 transition-colors">How it Works</a>
           <a href="#platforms" className="hover:text-teal-300 transition-colors">Platforms</a>
         </div>
-        <Link
-          href="/sign-in"
-          className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-lg border border-teal-500/50 bg-teal-500/10 text-teal-300 hover:bg-teal-500/20 hover:border-teal-400/70 transition-all shadow-lg shadow-teal-900/20 hover:scale-105"
-        >
-          Get Started <ChevronRight className="w-3.5 h-3.5" />
-        </Link>
+
+        <div className="flex items-center gap-3">
+          {/* LinkedIn icon */}
+          <a
+            href="https://www.linkedin.com/in/pushkarlabh/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+            className="w-9 h-9 rounded-lg border border-white/10 bg-white/[0.04] flex items-center justify-center text-zinc-500 hover:text-sky-400 hover:border-sky-500/40 hover:bg-sky-500/10 transition-all hover:scale-110"
+          >
+            {/* LinkedIn SVG — lucide-react doesn't include it */}
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+
+          {/* GitHub icon */}
+          <a
+            href="https://github.com/pushkarlabh1/Applysmart"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+            className="w-9 h-9 rounded-lg border border-white/10 bg-white/[0.04] flex items-center justify-center text-zinc-500 hover:text-white hover:border-white/30 hover:bg-white/10 transition-all hover:scale-110"
+          >
+            <Github className="w-4 h-4" />
+          </a>
+
+          {/* Get Started */}
+          <Link
+            href="/sign-in"
+            className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-lg border border-teal-500/50 bg-teal-500/10 text-teal-300 hover:bg-teal-500/20 hover:border-teal-400/70 transition-all shadow-lg shadow-teal-900/20 hover:scale-105"
+          >
+            Get Started <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
       </nav>
 
       {/* ── HERO ── */}
