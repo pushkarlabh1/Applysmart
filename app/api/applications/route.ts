@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Application from "@/models/Application";
-import mongoose from "mongoose";
 
 // GET applications
 export async function GET() {
@@ -30,11 +29,12 @@ await connectDB();
 const body = await req.json();
 
 const newApplication = new Application({
-  userId: new mongoose.Types.ObjectId(),   // required ObjectId
+  userId: body.userId || "anonymous",
   company: body.company || "LinkedIn Job",
   role: body.role || "Auto Applied Role",
   status: body.status || "Applied",
   jobUrl: body.jobUrl || "",
+  platform: body.platform || "LinkedIn",
   atsScore: body.atsScore || 0,
   appliedDate: new Date(),
 });

@@ -10,6 +10,10 @@ const ResumeSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    filePath: {
+      type: String,
+      default: "",
+    },
     rawText: {
       type: String,
       default: "",

@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const ApplicationSchema = new mongoose.Schema(
   {
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       required: true,
     },
     company: {
@@ -21,6 +21,10 @@ const ApplicationSchema = new mongoose.Schema(
     jobUrl: {
       type: String,
       default: "",
+    },
+    platform: {
+      type: String,
+      default: "LinkedIn",
     },
     atsScore: {
       type: Number,

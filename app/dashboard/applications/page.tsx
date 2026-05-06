@@ -9,6 +9,7 @@ interface Application {
   status: string;
   jobUrl?: string;
   atsScore?: number;
+  platform?: string;
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -159,8 +160,11 @@ export default function ApplicationsPage() {
                   <p className="text-sm text-gray-500">{app.role}</p>
                 </div>
 
-                {/* Right: ATS Score + View button + Status badge */}
+                {/* Right: Platform + ATS Score + View button + Status badge */}
                 <div className="flex items-center gap-3 shrink-0">
+                  <span className="text-xs font-semibold px-2 py-1 rounded bg-gray-100 text-gray-600 border border-gray-200">
+                    {app.platform || "LinkedIn"}
+                  </span>
                   <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700">
                     ATS: {app.atsScore !== undefined ? `${app.atsScore}%` : "N/A"}
                   </span>

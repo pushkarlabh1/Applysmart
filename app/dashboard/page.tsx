@@ -18,6 +18,8 @@ export default function DashboardPage() {
   const [keywords, setKeywords] = useState("frontend developer");
   const [location, setLocation] = useState("Remote");
   const [limit, setLimit] = useState(3);
+  const [platform, setPlatform] = useState("LinkedIn");
+  const [prioritizeEasyApply, setPrioritizeEasyApply] = useState(true);
 
   const [total, setTotal] = useState(0);
   const [interviews, setInterviews] = useState(0);
@@ -52,7 +54,7 @@ export default function DashboardPage() {
       const res = await fetch("/api/auto-apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ keywords, location, limit, userId: user?.id }),
+        body: JSON.stringify({ platform, keywords, location, limit, prioritizeEasyApply, userId: user?.id }),
       });
       const data = await res.json();
       
@@ -91,8 +93,8 @@ export default function DashboardPage() {
       {/* Auto Apply Banner */}
       <div className="bg-indigo-600 text-white p-6 rounded-xl flex justify-between items-center">
         <div>
-          <h2 className="text-xl font-semibold">LinkedIn Auto Apply</h2>
-          <p className="text-indigo-200 text-sm mt-1">Automatically apply to Easy Apply jobs on LinkedIn</p>
+          <h2 className="text-xl font-semibold">Auto Apply Bot</h2>
+          <p className="text-indigo-200 text-sm mt-1">Automatically apply to jobs on LinkedIn, Indeed, and Naukri</p>
         </div>
         <button
           onClick={() => { setShowModal(true); setResult(null); }}
@@ -182,6 +184,21 @@ export default function DashboardPage() {
 
             <div className="space-y-4">
               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Platform</label>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                    <input type="radio" name="platform" value="LinkedIn" checked={platform === "LinkedIn"} onChange={(e) => setPlatform(e.target.value)} className="text-indigo-600 focus:ring-indigo-500" /> LinkedIn
+                  </label>
+                  <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                    <input type="radio" name="platform" value="Indeed" checked={platform === "Indeed"} onChange={(e) => setPlatform(e.target.value)} className="text-indigo-600 focus:ring-indigo-500" /> Indeed
+                  </label>
+                  <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                    <input type="radio" name="platform" value="Naukri" checked={platform === "Naukri"} onChange={(e) => setPlatform(e.target.value)} className="text-indigo-600 focus:ring-indigo-500" /> Naukri
+                  </label>
+                </div>
+              </div>
+              
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Job Keywords</label>
                 <input
                   type="text"
@@ -214,10 +231,25 @@ export default function DashboardPage() {
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
+
+              {platform === "Naukri" && (
+                <div className="flex items-center gap-2 mt-2">
+                  <input
+                    type="checkbox"
+                    id="prioritizeEasyApply"
+                    checked={prioritizeEasyApply}
+                    onChange={(e) => setPrioritizeEasyApply(e.target.checked)}
+                    className="text-indigo-600 focus:ring-indigo-500 rounded border-gray-300"
+                  />
+                  <label htmlFor="prioritizeEasyApply" className="text-sm font-medium text-gray-700">
+                    Prioritize Naukri Easy Apply (Do external sites last)
+                  </label>
+                </div>
+              )}
             </div>
 
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-5 text-sm text-yellow-800">
-              ⚠️ This will open Chrome and automatically apply to up to <strong>{limit}</strong> Easy Apply jobs for "<strong>{keywords}</strong>" in <strong>{location}</strong>. Only fully automated forms will be submitted.
+              ⚠️ This will open Chrome and automatically apply to up to <strong>{limit}</strong> jobs on <strong>{platform}</strong> for "<strong>{keywords}</strong>" in <strong>{location}</strong>. Only fully automated forms will be submitted.
             </div>
 
             <div className="flex gap-3 mt-6">

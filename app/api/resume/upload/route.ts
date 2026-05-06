@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Resume from "@/models/Resume";
 import { TECH_KEYWORDS, SOFT_SKILLS } from "@/lib/jobMatcher";
+import fs from "fs/promises";
+import path from "path";
 
 // ── Regex-based resume parser ──────────────────────────────────────────
 function parseResume(text: string) {
@@ -119,12 +121,20 @@ export async function POST(req: NextRequest) {
     // Parse the extracted text
     const parsedData = parseResume(rawText);
 
+    // Save physical file for bots to upload
+    const uploadsDir = path.join(process.cwd(), "public", "uploads");
+    await fs.mkdir(uploadsDir, { recursive: true });
+    const safeUserId = userId || "anonymous";
+    const filePath = path.join(uploadsDir, `${safeUserId}_resume.pdf`);
+    await fs.writeFile(filePath, buffer);
+
     // Upsert: one resume per user (replace if already exists)
     const saved = await Resume.findOneAndUpdate(
-      { userId: userId || "anonymous" },
+      { userId: safeUserId },
       {
-        userId: userId || "anonymous",
+        userId: safeUserId,
         fileName: file.name,
+        filePath: filePath,
         rawText,
         parsedData,
       },
