@@ -34,6 +34,7 @@ const newApplication = new Application({
   company: body.company || "LinkedIn Job",
   role: body.role || "Auto Applied Role",
   status: body.status || "Applied",
+  jobUrl: body.jobUrl || "",
   appliedDate: new Date(),
 });
 await newApplication.save();

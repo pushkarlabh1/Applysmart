@@ -18,6 +18,10 @@ const ApplicationSchema = new mongoose.Schema(
       type: String,
       default: "Applied",
     },
+    jobUrl: {
+      type: String,
+      default: "",
+    },
     appliedDate: {
       type: Date,
       default: Date.now,
