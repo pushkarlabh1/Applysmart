@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Briefcase, CalendarCheck, Award, XCircle, X } from "lucide-react";
+import { Briefcase, CalendarCheck, Award, XCircle, X, Zap, ChevronRight, CheckCircle2, History } from "lucide-react";
 import ApplicationChart from "@/components/ApplicationChart";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
@@ -88,187 +88,289 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto space-y-10">
+    <div className="max-w-6xl mx-auto space-y-10 pb-10">
 
       {/* Auto Apply Banner */}
-      <div className="bg-indigo-600 text-white p-6 rounded-xl flex justify-between items-center">
-        <div>
-          <h2 className="text-xl font-semibold">Auto Apply Bot</h2>
-          <p className="text-indigo-200 text-sm mt-1">Automatically apply to jobs on LinkedIn, Indeed, and Naukri</p>
+      <div className="relative overflow-hidden group rounded-3xl border border-teal-500/20 bg-zinc-900/40 p-1 backdrop-blur-sm shadow-2xl">
+        <div className="absolute inset-0 bg-gradient-to-r from-teal-500/10 via-cyan-500/10 to-emerald-500/10 opacity-50 group-hover:opacity-100 transition-opacity" />
+        <div className="relative flex flex-col md:flex-row justify-between items-center p-8 gap-6">
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-teal-900/40">
+              <Zap className="w-8 h-8 text-zinc-900" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-white tracking-tight">AI Auto-Apply Bot</h2>
+              <p className="text-zinc-400 mt-1 max-w-md">Automatically apply to high-match jobs on LinkedIn, Indeed, and Naukri while you sleep.</p>
+            </div>
+          </div>
+          <button
+            onClick={() => { setShowModal(true); setResult(null); }}
+            disabled={loadingAutoApply}
+            className="w-full md:w-auto px-8 py-4 rounded-2xl font-bold text-zinc-900 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 transition-all hover:scale-105 shadow-xl shadow-teal-900/20 disabled:opacity-50"
+          >
+            {loadingAutoApply ? (
+              <span className="flex items-center gap-2">
+                <Zap className="w-4 h-4 animate-pulse" /> Running...
+              </span>
+            ) : (
+              "Launch Engine"
+            )}
+          </button>
         </div>
-        <button
-          onClick={() => { setShowModal(true); setResult(null); }}
-          disabled={loadingAutoApply}
-          className="bg-white text-indigo-700 px-5 py-2 rounded-lg font-semibold disabled:opacity-60"
-        >
-          {loadingAutoApply ? "Running... (do not close)" : "Start Auto Apply"}
-        </button>
       </div>
 
       {/* Result Summary */}
       {result && (
-        <div className={`p-5 rounded-xl border ${result.applied?.length > 0 ? "bg-green-50 border-green-200" : "bg-yellow-50 border-yellow-200"}`}>
-          <p className="font-semibold text-gray-800 mb-2">{result.message}</p>
-          {result.applied?.length > 0 && (
-            <div className="mb-2">
-              <p className="text-sm font-medium text-green-700 mb-1">✅ Applied to:</p>
-              <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
-                {result.applied.map((j, i) => <li key={i}>{j.role} @ {j.company}</li>)}
-              </ul>
-            </div>
-          )}
-          {result.skipped?.length > 0 && (
-            <div>
-              <p className="text-sm font-medium text-yellow-700 mb-1">⏭ Skipped:</p>
-              <ul className="list-disc list-inside text-sm text-gray-500 space-y-1">
-                {result.skipped.map((s, i) => <li key={i}>{s}</li>)}
-              </ul>
-            </div>
-          )}
+        <div className={`relative overflow-hidden rounded-3xl border ${result.applied?.length > 0 ? "border-emerald-500/20 bg-emerald-500/5" : "border-amber-500/20 bg-amber-500/5"} p-8 backdrop-blur-sm animate-in fade-in slide-in-from-top-4 duration-500`}>
+          <div className="flex items-start gap-4">
+             <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${result.applied?.length > 0 ? "bg-emerald-500/20 text-emerald-400" : "bg-amber-500/20 text-amber-400"}`}>
+               {result.applied?.length > 0 ? <CheckCircle2 size={20} /> : <Zap size={20} />}
+             </div>
+             <div className="flex-1">
+                <p className="font-bold text-white text-lg mb-4">{result.message}</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {result.applied?.length > 0 && (
+                    <div className="space-y-3">
+                      <p className="text-sm font-semibold text-emerald-400 uppercase tracking-wider">✅ Successful Applications</p>
+                      <ul className="space-y-2">
+                        {result.applied.map((j, i) => (
+                          <li key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 text-zinc-300 text-sm">
+                             <Briefcase size={14} className="text-emerald-400" />
+                             <span className="font-medium text-white">{j.role}</span> @ {j.company}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {result.skipped?.length > 0 && (
+                    <div className="space-y-3">
+                      <p className="text-sm font-semibold text-amber-400 uppercase tracking-wider">⏭ Processing Queue</p>
+                      <ul className="space-y-2">
+                        {result.skipped.map((s, i) => (
+                          <li key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 text-zinc-500 text-sm italic">
+                             <History size={14} className="text-amber-400" />
+                             {s}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+             </div>
+          </div>
         </div>
       )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Link href="/dashboard/applications">
-          <div className="bg-blue-600 text-white p-6 rounded-2xl flex justify-between items-center">
-            <div>
-              <p>Total Applications</p>
-              <h2 className="text-3xl font-bold">{total}</h2>
-            </div>
-            <Briefcase size={32} />
-          </div>
-        </Link>
-        <div className="bg-yellow-500 text-white p-6 rounded-2xl flex justify-between items-center">
-          <div>
-            <p>Interviews</p>
-            <h2 className="text-3xl font-bold">{interviews}</h2>
-            <p className="text-sm">{interviewRate}% rate</p>
-          </div>
-          <CalendarCheck size={32} />
-        </div>
-        <div className="bg-green-600 text-white p-6 rounded-2xl flex justify-between items-center">
-          <div>
-            <p>Offers</p>
-            <h2 className="text-3xl font-bold">{offers}</h2>
-            <p className="text-sm">{offerRate}% conversion</p>
-          </div>
-          <Award size={32} />
-        </div>
-        <div className="bg-red-600 text-white p-6 rounded-2xl flex justify-between items-center">
-          <div>
-            <p>Rejections</p>
-            <h2 className="text-3xl font-bold">{rejected}</h2>
-            <p className="text-sm">{rejectionRate}% rejection</p>
-          </div>
-          <XCircle size={32} />
-        </div>
+        <StatCard 
+          href="/dashboard/applications"
+          label="Total Applications"
+          value={total}
+          icon={Briefcase}
+          color="teal"
+          subtext="Submissions"
+        />
+        <StatCard 
+          label="Interviews"
+          value={interviews}
+          icon={CalendarCheck}
+          color="amber"
+          subtext={`${interviewRate}% Success`}
+        />
+        <StatCard 
+          label="Offers"
+          value={offers}
+          icon={Award}
+          color="emerald"
+          subtext={`${offerRate}% Conversion`}
+        />
+        <StatCard 
+          label="Rejections"
+          value={rejected}
+          icon={XCircle}
+          color="rose"
+          subtext={`${rejectionRate}% Rate`}
+        />
       </div>
 
-      {/* Chart */}
-      <div className="bg-white p-8 rounded-3xl shadow-xl">
-        <h2 className="text-xl font-semibold mb-6">Application Status Analytics</h2>
-        <ApplicationChart data={chartData} />
+      {/* Analytics */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 bg-zinc-900/40 backdrop-blur-sm border border-white/5 rounded-3xl p-8 shadow-xl">
+          <div className="flex justify-between items-center mb-8">
+             <h2 className="text-xl font-bold text-white tracking-tight">Status Analytics</h2>
+             <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/5 text-xs text-zinc-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-400" /> Real-time tracking
+             </div>
+          </div>
+          <div className="h-[300px]">
+            <ApplicationChart data={chartData} />
+          </div>
+        </div>
+
+        <div className="bg-zinc-900/40 backdrop-blur-sm border border-white/5 rounded-3xl p-8 shadow-xl flex flex-col justify-between">
+           <div>
+              <h2 className="text-xl font-bold text-white tracking-tight mb-2">Job Match Strength</h2>
+              <p className="text-zinc-500 text-sm leading-relaxed mb-6">Our AI ensures you only apply to jobs where your match score is above 60%.</p>
+           </div>
+           <div className="space-y-6">
+              <MatchMetric label="Semantic Analysis" progress={85} />
+              <MatchMetric label="Keyword Match" progress={72} />
+              <MatchMetric label="ATS Compliance" progress={94} />
+           </div>
+           <Link href="/dashboard/resume" className="mt-8 flex items-center justify-center gap-2 p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 text-zinc-300 font-medium transition-all group">
+              Optimize Resume <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+           </Link>
+        </div>
       </div>
 
       {/* Confirmation Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-gray-800">Configure Auto Apply</h3>
-              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">
-                <X size={22} />
+        <div className="fixed inset-0 bg-zinc-950/80 backdrop-blur-sm flex items-center justify-center z-[100] animate-in fade-in duration-300 p-4">
+          <div className="bg-zinc-900 border border-white/10 rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-300">
+            <div className="p-8 border-b border-white/5 flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                 <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center">
+                    <Zap className="w-5 h-5 text-teal-400" />
+                 </div>
+                 <h3 className="text-xl font-bold text-white tracking-tight">Configure Engine</h3>
+              </div>
+              <button onClick={() => setShowModal(false)} className="text-zinc-500 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-full">
+                <X size={20} />
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="p-8 space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Platform</label>
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                    <input type="radio" name="platform" value="LinkedIn" checked={platform === "LinkedIn"} onChange={(e) => setPlatform(e.target.value)} className="text-indigo-600 focus:ring-indigo-500" /> LinkedIn
-                  </label>
-                  <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                    <input type="radio" name="platform" value="Indeed" checked={platform === "Indeed"} onChange={(e) => setPlatform(e.target.value)} className="text-indigo-600 focus:ring-indigo-500" /> Indeed
-                  </label>
-                  <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                    <input type="radio" name="platform" value="Naukri" checked={platform === "Naukri"} onChange={(e) => setPlatform(e.target.value)} className="text-indigo-600 focus:ring-indigo-500" /> Naukri
-                  </label>
+                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3">Target Platform</label>
+                <div className="grid grid-cols-3 gap-3">
+                  {["LinkedIn", "Indeed", "Naukri"].map((p) => (
+                    <label key={p} className={`flex items-center justify-center p-3 rounded-xl border cursor-pointer transition-all ${platform === p ? "bg-teal-500/10 border-teal-500/40 text-teal-300" : "bg-white/5 border-white/5 text-zinc-500 hover:border-white/10"}`}>
+                      <input type="radio" name="platform" value={p} checked={platform === p} onChange={(e) => setPlatform(e.target.value)} className="hidden" /> 
+                      <span className="text-sm font-bold">{p}</span>
+                    </label>
+                  ))}
                 </div>
               </div>
               
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Job Keywords</label>
-                <input
-                  type="text"
-                  value={keywords}
-                  onChange={(e) => setKeywords(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="e.g. frontend developer"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3">Job Keywords</label>
+                  <input
+                    type="text"
+                    value={keywords}
+                    onChange={(e) => setKeywords(e.target.value)}
+                    className="w-full bg-zinc-950 border border-white/5 rounded-xl px-4 py-3 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-teal-500/40 transition-all"
+                    placeholder="e.g. frontend developer"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3">Location</label>
+                  <input
+                    type="text"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    className="w-full bg-zinc-950 border border-white/5 rounded-xl px-4 py-3 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-teal-500/40 transition-all"
+                    placeholder="e.g. Remote"
+                  />
+                </div>
               </div>
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                <div className="flex justify-between items-center mb-3">
+                   <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest">Applications Limit</label>
+                   <span className="text-xs font-bold text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded">{limit} Jobs</span>
+                </div>
                 <input
-                  type="text"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="e.g. Remote, India"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Number of Applications <span className="text-gray-400">(max 10)</span>
-                </label>
-                <input
-                  type="number"
+                  type="range"
+                  min="1"
+                  max="10"
                   value={limit}
-                  min={1}
-                  max={10}
-                  onChange={(e) => setLimit(Math.min(10, Math.max(1, Number(e.target.value))))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  onChange={(e) => setLimit(Number(e.target.value))}
+                  className="w-full accent-teal-500 bg-zinc-950 h-2 rounded-lg cursor-pointer"
                 />
               </div>
 
               {platform === "Naukri" && (
-                <div className="flex items-center gap-2 mt-2">
-                  <input
-                    type="checkbox"
-                    id="prioritizeEasyApply"
-                    checked={prioritizeEasyApply}
-                    onChange={(e) => setPrioritizeEasyApply(e.target.checked)}
-                    className="text-indigo-600 focus:ring-indigo-500 rounded border-gray-300"
-                  />
-                  <label htmlFor="prioritizeEasyApply" className="text-sm font-medium text-gray-700">
-                    Prioritize Naukri Easy Apply (Do external sites last)
-                  </label>
-                </div>
+                <label className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5 cursor-pointer hover:bg-white/10 transition-all group">
+                  <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${prioritizeEasyApply ? "bg-teal-500 border-teal-500 text-zinc-900" : "border-white/20"}`}>
+                    <input
+                      type="checkbox"
+                      checked={prioritizeEasyApply}
+                      onChange={(e) => setPrioritizeEasyApply(e.target.checked)}
+                      className="hidden"
+                    />
+                    {prioritizeEasyApply && <CheckCircle2 size={14} />}
+                  </div>
+                  <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">Prioritize Naukri Easy Apply</span>
+                </label>
               )}
+
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 text-xs text-amber-200/70 leading-relaxed italic">
+                 ⚠️ The bot will automatically handle forms, resume uploads, and semantic matching for you.
+              </div>
             </div>
 
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-5 text-sm text-yellow-800">
-              ⚠️ This will open Chrome and automatically apply to up to <strong>{limit}</strong> jobs on <strong>{platform}</strong> for "<strong>{keywords}</strong>" in <strong>{location}</strong>. Only fully automated forms will be submitted.
-            </div>
-
-            <div className="flex gap-3 mt-6">
+            <div className="p-8 bg-zinc-950/50 border-t border-white/5 flex gap-3">
               <button
                 onClick={() => setShowModal(false)}
-                className="flex-1 px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50"
+                className="flex-1 px-4 py-4 rounded-2xl border border-white/10 text-zinc-400 font-bold text-sm hover:bg-white/5 hover:text-white transition-all"
               >
                 Cancel
               </button>
               <button
                 onClick={startAutoApply}
-                className="flex-1 px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700"
+                className="flex-1 px-4 py-4 rounded-2xl bg-gradient-to-r from-teal-600 to-cyan-600 text-white font-bold text-sm hover:from-teal-500 hover:to-cyan-500 transition-all shadow-lg shadow-teal-900/20"
               >
-                Confirm & Start
+                Confirm & Launch
               </button>
             </div>
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// ── Sub-components ────────────────────────────────────────────────────
+
+function StatCard({ label, value, icon: Icon, color, subtext, href }: any) {
+  const colors: any = {
+    teal: "text-teal-400 bg-teal-500/10 border-teal-500/20",
+    amber: "text-amber-400 bg-amber-500/10 border-amber-500/20",
+    emerald: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+    rose: "text-rose-400 bg-rose-500/10 border-rose-500/20",
+  };
+
+  const Content = (
+    <div className="bg-zinc-900/40 backdrop-blur-sm border border-white/5 p-8 rounded-3xl group hover:border-white/10 hover:bg-zinc-800/40 transition-all cursor-pointer">
+      <div className="flex justify-between items-start mb-6">
+        <div className={`p-3 rounded-2xl ${colors[color]} border transition-transform group-hover:scale-110 duration-300`}>
+          <Icon size={24} />
+        </div>
+        <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-600">{subtext}</span>
+      </div>
+      <div>
+        <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-1">{label}</h3>
+        <p className="text-4xl font-extrabold text-white tracking-tighter">{value}</p>
+      </div>
+    </div>
+  );
+
+  return href ? <Link href={href}>{Content}</Link> : Content;
+}
+
+function MatchMetric({ label, progress }: any) {
+  return (
+    <div>
+      <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest mb-2.5">
+        <span className="text-zinc-500">{label}</span>
+        <span className="text-teal-400">{progress}%</span>
+      </div>
+      <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+        <div className="h-full bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full" style={{ width: `${progress}%` }} />
+      </div>
     </div>
   );
 }

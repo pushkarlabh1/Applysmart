@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Briefcase, Target, ExternalLink, Plus, Filter, Search, Trash2 } from "lucide-react";
 
 interface Application {
   _id: string;
@@ -12,11 +13,11 @@ interface Application {
   platform?: string;
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  Applied: "bg-blue-100 text-blue-700",
-  Interview: "bg-yellow-100 text-yellow-700",
-  Offer: "bg-green-100 text-green-700",
-  Rejected: "bg-red-100 text-red-700",
+const STATUS_CONFIG: Record<string, { bg: string; text: string; dot: string }> = {
+  Applied: { bg: "bg-teal-500/10", text: "text-teal-400", dot: "bg-teal-400" },
+  Interview: { bg: "bg-amber-500/10", text: "text-amber-400", dot: "bg-amber-400" },
+  Offer: { bg: "bg-emerald-500/10", text: "text-emerald-400", dot: "bg-emerald-400" },
+  Rejected: { bg: "bg-rose-500/10", text: "text-rose-400", dot: "bg-rose-400" },
 };
 
 export default function ApplicationsPage() {
@@ -26,6 +27,7 @@ export default function ApplicationsPage() {
   const [status, setStatus] = useState("Applied");
   const [jobUrl, setJobUrl] = useState("");
   const [atsScore, setAtsScore] = useState<number | "">("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetchApplications();
@@ -65,129 +67,171 @@ export default function ApplicationsPage() {
     }
   };
 
+  const filteredApps = applications.filter(app => 
+    app.company.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    app.role.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-
-      <h1 className="text-3xl font-bold text-gray-900">Applications</h1>
-
-      {/* Add Form */}
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow space-y-4">
-        <h2 className="text-lg font-semibold text-gray-800">Add Application Manually</h2>
-
-        <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">Company</label>
-          <input
-            className="w-full border border-gray-300 p-2 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
-            placeholder="Enter company name"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">Role</label>
-          <input
-            className="w-full border border-gray-300 p-2 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            placeholder="Enter job role"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">Job URL <span className="text-gray-400">(optional)</span></label>
-          <input
-            className="w-full border border-gray-300 p-2 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            value={jobUrl}
-            onChange={(e) => setJobUrl(e.target.value)}
-            placeholder="https://linkedin.com/jobs/..."
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">ATS Score <span className="text-gray-400">(optional)</span></label>
-          <input
-            type="number"
-            min="0"
-            max="100"
-            className="w-full border border-gray-300 p-2 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            value={atsScore}
-            onChange={(e) => setAtsScore(e.target.value === "" ? "" : Number(e.target.value))}
-            placeholder="e.g. 85"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">Status</label>
-          <select
-            className="w-full border border-gray-300 p-2 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            <option>Applied</option>
-            <option>Interview</option>
-            <option>Offer</option>
-            <option>Rejected</option>
-          </select>
-        </div>
-
-        <button
-          type="submit"
-          className="bg-purple-600 text-white px-5 py-2 rounded-lg hover:bg-purple-700 font-medium transition"
-        >
-          Add Application
-        </button>
-      </form>
-
-      {/* Applications List */}
-      <div className="bg-white p-6 rounded-xl shadow">
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">Your Applications</h2>
-
-        {applications.length === 0 ? (
-          <p className="text-gray-500">No applications yet.</p>
-        ) : (
-          <ul className="space-y-3">
-            {applications.map((app) => (
-              <li
-                key={app._id}
-                className="border border-gray-200 p-4 rounded-xl flex justify-between items-center hover:shadow-sm transition"
-              >
-                {/* Left: Company + Role */}
-                <div className="space-y-0.5">
-                  <p className="font-semibold text-gray-900">{app.company}</p>
-                  <p className="text-sm text-gray-500">{app.role}</p>
-                </div>
-
-                {/* Right: Platform + ATS Score + View button + Status badge */}
-                <div className="flex items-center gap-3 shrink-0">
-                  <span className="text-xs font-semibold px-2 py-1 rounded bg-gray-100 text-gray-600 border border-gray-200">
-                    {app.platform || "LinkedIn"}
-                  </span>
-                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700">
-                    ATS: {app.atsScore !== undefined ? `${app.atsScore}%` : "N/A"}
-                  </span>
-                  {app.jobUrl ? (
-                    <a
-                      href={app.jobUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs font-semibold px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition"
-                    >
-                      View
-                    </a>
-                  ) : null}
-                  <span className={`text-xs font-semibold px-3 py-1 rounded-full ${STATUS_COLORS[app.status] || "bg-gray-100 text-gray-600"}`}>
-                    {app.status}
-                  </span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
+    <div className="max-w-6xl mx-auto space-y-10 pb-20">
+      
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+         <div>
+            <h1 className="text-3xl font-extrabold text-white tracking-tight">Job Applications</h1>
+            <p className="text-zinc-500 mt-1">Track every application, platform, and ATS score in one place.</p>
+         </div>
+         <div className="relative w-full md:w-80">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+            <input 
+              type="text" 
+              placeholder="Search applications..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-zinc-900 border border-white/5 rounded-2xl pl-12 pr-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-500/40 transition-all shadow-xl"
+            />
+         </div>
       </div>
 
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+        
+        {/* Add Form */}
+        <div className="lg:col-span-1 bg-zinc-900/40 backdrop-blur-sm border border-white/5 rounded-3xl p-8 shadow-xl">
+          <div className="flex items-center gap-3 mb-8">
+             <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center">
+                <Plus className="w-5 h-5 text-teal-400" />
+             </div>
+             <h2 className="text-xl font-bold text-white tracking-tight">New Record</h2>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3">Company</label>
+              <input
+                className="w-full bg-zinc-950 border border-white/5 p-4 rounded-2xl text-white placeholder-zinc-700 focus:outline-none focus:ring-2 focus:ring-teal-500/40 transition-all text-sm"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                placeholder="Google, Meta, etc."
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3">Job Role</label>
+              <input
+                className="w-full bg-zinc-950 border border-white/5 p-4 rounded-2xl text-white placeholder-zinc-700 focus:outline-none focus:ring-2 focus:ring-teal-500/40 transition-all text-sm"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                placeholder="Software Engineer"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3">ATS Match (%)</label>
+              <input
+                type="number"
+                min="0"
+                max="100"
+                className="w-full bg-zinc-950 border border-white/5 p-4 rounded-2xl text-white placeholder-zinc-700 focus:outline-none focus:ring-2 focus:ring-teal-500/40 transition-all text-sm"
+                value={atsScore}
+                onChange={(e) => setAtsScore(e.target.value === "" ? "" : Number(e.target.value))}
+                placeholder="Match Score"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3">Status</label>
+              <select
+                className="w-full bg-zinc-950 border border-white/5 p-4 rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500/40 transition-all text-sm appearance-none"
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="Applied">Applied</option>
+                <option value="Interview">Interview</option>
+                <option value="Offer">Offer</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 text-white p-4 rounded-2xl font-bold text-sm hover:from-teal-500 hover:to-cyan-500 transition-all shadow-lg shadow-teal-900/20"
+            >
+              Add Application
+            </button>
+          </form>
+        </div>
+
+        {/* Applications List */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="flex justify-between items-center px-2">
+             <h2 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+               History <span className="text-xs font-bold text-zinc-600 bg-zinc-900 px-2 py-0.5 rounded-full">{filteredApps.length}</span>
+             </h2>
+             <button className="text-zinc-500 hover:text-white flex items-center gap-2 text-xs font-bold uppercase tracking-widest transition-colors">
+                <Filter size={14} /> Filter Platform
+             </button>
+          </div>
+
+          {filteredApps.length === 0 ? (
+            <div className="bg-zinc-900/40 border border-white/5 rounded-3xl p-16 text-center shadow-xl">
+               <Briefcase size={48} className="mx-auto text-zinc-800 mb-4" />
+               <p className="text-zinc-500 font-medium">No applications found matching your criteria.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredApps.map((app) => (
+                <div
+                  key={app._id}
+                  className="group bg-zinc-900/40 backdrop-blur-sm border border-white/5 p-6 rounded-3xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 hover:border-white/10 hover:bg-zinc-800/40 transition-all shadow-xl"
+                >
+                  {/* Left: Company + Role */}
+                  <div className="flex items-center gap-5">
+                    <div className="w-14 h-14 rounded-2xl bg-zinc-950 border border-white/5 flex items-center justify-center text-zinc-600 font-bold text-xl group-hover:text-teal-400 transition-colors">
+                       {app.company[0]}
+                    </div>
+                    <div>
+                      <p className="font-bold text-white text-lg tracking-tight mb-0.5">{app.company}</p>
+                      <div className="flex items-center gap-3">
+                         <p className="text-sm text-zinc-500 font-medium">{app.role}</p>
+                         <span className="w-1 h-1 rounded-full bg-zinc-700" />
+                         <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{app.platform || "LinkedIn"}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: ATS + View + Status */}
+                  <div className="w-full md:w-auto flex flex-wrap items-center gap-3 md:shrink-0 pt-4 md:pt-0 border-t border-white/5 md:border-0">
+                    <div className="flex flex-col items-center px-4 py-2 rounded-2xl bg-white/5 border border-white/5">
+                       <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mb-0.5">ATS Match</span>
+                       <span className={`text-sm font-bold ${app.atsScore && app.atsScore > 75 ? "text-emerald-400" : "text-teal-400"}`}>
+                         {app.atsScore !== undefined ? `${app.atsScore}%` : "N/A"}
+                       </span>
+                    </div>
+
+                    {app.jobUrl && (
+                      <a
+                        href={app.jobUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 rounded-2xl bg-zinc-950 border border-white/5 text-zinc-500 hover:text-white hover:border-white/20 transition-all"
+                        title="View Job Post"
+                      >
+                        <ExternalLink size={18} />
+                      </a>
+                    )}
+                    
+                    <div className={`flex items-center gap-2 px-4 py-3 rounded-2xl font-bold text-xs uppercase tracking-widest border transition-all ${STATUS_CONFIG[app.status]?.bg} ${STATUS_CONFIG[app.status]?.text} border-transparent group-hover:border-current/10`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${STATUS_CONFIG[app.status]?.dot} animate-pulse`} />
+                      {app.status}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

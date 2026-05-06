@@ -16,19 +16,19 @@ export default function Home() {
 
       {/* ── NAVBAR ── */}
       <nav className="relative z-50 flex items-center justify-between px-6 md:px-16 py-5 border-b border-white/[0.06] backdrop-blur-md bg-zinc-950/70">
-        <div className="flex items-center gap-2.5">
-          {/* Logo: Crosshair target — "Hit your target job" */}
-          <div className="relative w-9 h-9">
+        <div className="flex items-center gap-3">
+          {/* Logo: Crosshair target */}
+          <div className="relative w-11 h-11">
             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-500 opacity-20 blur-md" />
-            <div className="relative w-9 h-9 rounded-xl bg-zinc-900 border border-teal-500/40 flex items-center justify-center shadow-lg">
-              <Target className="w-5 h-5 text-teal-400" />
+            <div className="relative w-11 h-11 rounded-xl bg-zinc-900 border border-teal-500/40 flex items-center justify-center shadow-lg">
+              <Target className="w-6 h-6 text-teal-400" />
             </div>
           </div>
-          <span className="text-lg font-bold tracking-tight">
+          <span className="text-2xl font-bold tracking-tight">
             Apply<span className="text-teal-400">Smart</span>
           </span>
         </div>
-        <div className="hidden md:flex items-center gap-8 text-sm text-zinc-500">
+        <div className="hidden md:flex items-center gap-8 text-base font-medium text-zinc-400">
           <a href="#features" className="hover:text-teal-300 transition-colors">Features</a>
           <a href="#how-it-works" className="hover:text-teal-300 transition-colors">How it Works</a>
           <a href="#platforms" className="hover:text-teal-300 transition-colors">Platforms</a>
@@ -41,10 +41,9 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
-            className="w-9 h-9 rounded-lg border border-white/10 bg-white/[0.04] flex items-center justify-center text-zinc-500 hover:text-sky-400 hover:border-sky-500/40 hover:bg-sky-500/10 transition-all hover:scale-110"
+            className="w-11 h-11 rounded-lg border border-white/10 bg-white/[0.04] flex items-center justify-center text-zinc-400 hover:text-sky-400 hover:border-sky-500/40 hover:bg-sky-500/10 transition-all hover:scale-110"
           >
-            {/* LinkedIn SVG — lucide-react doesn't include it */}
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
             </svg>
           </a>
@@ -55,33 +54,32 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
-            className="w-9 h-9 rounded-lg border border-white/10 bg-white/[0.04] flex items-center justify-center text-zinc-500 hover:text-white hover:border-white/30 hover:bg-white/10 transition-all hover:scale-110"
+            className="w-11 h-11 rounded-lg border border-white/10 bg-white/[0.04] flex items-center justify-center text-zinc-400 hover:text-white hover:border-white/30 hover:bg-white/10 transition-all hover:scale-110"
           >
-            <Github className="w-4 h-4" />
+            <Github className="w-5 h-5" />
           </a>
 
           {/* Get Started */}
           <Link
             href="/sign-in"
-            className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-lg border border-teal-500/50 bg-teal-500/10 text-teal-300 hover:bg-teal-500/20 hover:border-teal-400/70 transition-all shadow-lg shadow-teal-900/20 hover:scale-105"
+            className="flex items-center gap-2 text-base font-semibold px-5 py-2.5 rounded-lg border border-teal-500/50 bg-teal-500/10 text-teal-300 hover:bg-teal-500/20 hover:border-teal-400/70 transition-all shadow-lg shadow-teal-900/20 hover:scale-105"
           >
-            Get Started <ChevronRight className="w-3.5 h-3.5" />
+            Get Started <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
       </nav>
 
       {/* ── HERO ── */}
-      <section className="relative z-10 pt-24 pb-28 px-6 md:px-16 text-center max-w-5xl mx-auto">
+      <section className="relative z-10 pt-24 pb-28 px-6 md:px-16 text-center max-w-6xl mx-auto">
 
         {/* Pill badge */}
-        <div className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-1.5 rounded-full border border-teal-500/30 bg-teal-500/[0.08] text-teal-300 mb-8">
-          <Sparkles className="w-3 h-3 text-teal-400" />
+        <div className="inline-flex items-center gap-2 text-sm font-semibold px-5 py-2 rounded-full border border-teal-500/30 bg-teal-500/[0.08] text-teal-300 mb-8">
+          <Sparkles className="w-4 h-4 text-teal-400" />
           AI-Powered · LinkedIn · Naukri · Indeed
         </div>
 
-        <h1 className="text-5xl md:text-7xl font-extrabold leading-tight tracking-tight mb-6">
-          Land Your Dream Job{" "}
-          <br className="hidden md:block" />
+        <h1 className="text-5xl md:text-7xl font-extrabold leading-[1.1] tracking-tight mb-6">
+          Land Your Dream Job <br />
           <span style={{backgroundImage: "linear-gradient(135deg, #2dd4bf, #22d3ee, #34d399)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text"}}>
             On Autopilot.
           </span>
