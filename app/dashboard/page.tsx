@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import { Briefcase, CalendarCheck, Award, XCircle, X } from "lucide-react";
 import ApplicationChart from "@/components/ApplicationChart";
 import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
 
 export default function DashboardPage() {
+  const { user } = useUser();
 
   const [applications, setApplications] = useState<any[]>([]);
   const [loadingAutoApply, setLoadingAutoApply] = useState(false);
@@ -50,13 +52,23 @@ export default function DashboardPage() {
       const res = await fetch("/api/auto-apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ keywords, location, limit }),
+        body: JSON.stringify({ keywords, location, limit, userId: user?.id }),
       });
       const data = await res.json();
+      
+      if (!res.ok) {
+        if (data.message === "NO_RESUME") {
+          alert("Please Upload the Resume first");
+          setResult({ message: "Auto apply cancelled. Please upload your resume in the Resume Parser.", applied: [], skipped: [] });
+          return;
+        }
+        throw new Error(data.message || "Failed");
+      }
+
       setResult(data);
       fetchApplications(); // refresh stats
-    } catch {
-      setResult({ message: "Auto apply failed. Check the server logs.", applied: [], skipped: [] });
+    } catch (err: any) {
+      setResult({ message: err.message || "Auto apply failed. Check the server logs.", applied: [], skipped: [] });
     } finally {
       setLoadingAutoApply(false);
     }

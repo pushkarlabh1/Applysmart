@@ -7,8 +7,8 @@ interface Application {
   company: string;
   role: string;
   status: string;
-  appliedDate: string;
   jobUrl?: string;
+  atsScore?: number;
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -24,6 +24,7 @@ export default function ApplicationsPage() {
   const [role, setRole] = useState("");
   const [status, setStatus] = useState("Applied");
   const [jobUrl, setJobUrl] = useState("");
+  const [atsScore, setAtsScore] = useState<number | "">("");
 
   useEffect(() => {
     fetchApplications();
@@ -50,12 +51,13 @@ export default function ApplicationsPage() {
       await fetch("/api/applications", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ company, role, status, jobUrl }),
+        body: JSON.stringify({ company, role, status, jobUrl, atsScore: atsScore || 0 }),
       });
       setCompany("");
       setRole("");
       setStatus("Applied");
       setJobUrl("");
+      setAtsScore("");
       fetchApplications();
     } catch (err) {
       console.error("Submit Error:", err);
@@ -104,6 +106,19 @@ export default function ApplicationsPage() {
         </div>
 
         <div>
+          <label className="block mb-1 text-sm font-medium text-gray-700">ATS Score <span className="text-gray-400">(optional)</span></label>
+          <input
+            type="number"
+            min="0"
+            max="100"
+            className="w-full border border-gray-300 p-2 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            value={atsScore}
+            onChange={(e) => setAtsScore(e.target.value === "" ? "" : Number(e.target.value))}
+            placeholder="e.g. 85"
+          />
+        </div>
+
+        <div>
           <label className="block mb-1 text-sm font-medium text-gray-700">Status</label>
           <select
             className="w-full border border-gray-300 p-2 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -144,8 +159,11 @@ export default function ApplicationsPage() {
                   <p className="text-sm text-gray-500">{app.role}</p>
                 </div>
 
-                {/* Right: View button + Status badge */}
+                {/* Right: ATS Score + View button + Status badge */}
                 <div className="flex items-center gap-3 shrink-0">
+                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700">
+                    ATS: {app.atsScore !== undefined ? `${app.atsScore}%` : "N/A"}
+                  </span>
                   {app.jobUrl ? (
                     <a
                       href={app.jobUrl}

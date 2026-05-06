@@ -22,6 +22,10 @@ const ApplicationSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    atsScore: {
+      type: Number,
+      default: 0,
+    },
     appliedDate: {
       type: Date,
       default: Date.now,

@@ -35,6 +35,7 @@ const newApplication = new Application({
   role: body.role || "Auto Applied Role",
   status: body.status || "Applied",
   jobUrl: body.jobUrl || "",
+  atsScore: body.atsScore || 0,
   appliedDate: new Date(),
 });
 await newApplication.save();
