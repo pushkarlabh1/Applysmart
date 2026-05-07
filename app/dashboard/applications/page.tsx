@@ -20,6 +20,12 @@ const STATUS_CONFIG: Record<string, { bg: string; text: string; dot: string }> =
   Rejected: { bg: "bg-rose-500/10", text: "text-rose-400", dot: "bg-rose-400" },
 };
 
+const PLATFORM_CONFIG: Record<string, { bg: string; text: string; border: string }> = {
+  LinkedIn: { bg: "bg-sky-500/10", text: "text-sky-400", border: "border-sky-500/20" },
+  Naukri: { bg: "bg-orange-500/10", text: "text-orange-400", border: "border-orange-500/20" },
+  Indeed: { bg: "bg-indigo-500/10", text: "text-indigo-400", border: "border-indigo-500/20" },
+};
+
 export default function ApplicationsPage() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [company, setCompany] = useState("");
@@ -187,24 +193,26 @@ export default function ApplicationsPage() {
                 >
                   {/* Left: Company + Role */}
                   <div className="flex items-center gap-5">
-                    <div className="w-14 h-14 rounded-2xl bg-zinc-950 border border-white/5 flex items-center justify-center text-zinc-600 font-bold text-xl group-hover:text-teal-400 transition-colors">
+                    <div className="w-16 h-16 rounded-2xl bg-zinc-950 border border-white/5 flex items-center justify-center text-zinc-500 font-bold text-2xl group-hover:text-teal-400 transition-colors">
                        {app.company[0]}
                     </div>
                     <div>
-                      <p className="font-bold text-white text-lg tracking-tight mb-0.5">{app.company}</p>
-                      <div className="flex items-center gap-3">
-                         <p className="text-sm text-zinc-500 font-medium">{app.role}</p>
-                         <span className="w-1 h-1 rounded-full bg-zinc-700" />
-                         <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{app.platform || "LinkedIn"}</span>
-                      </div>
+                      <p className="font-bold text-white text-xl tracking-tight mb-0.5">{app.company}</p>
+                      <p className="text-base text-zinc-500 font-medium">{app.role}</p>
                     </div>
                   </div>
 
-                  {/* Right: ATS + View + Status */}
-                  <div className="w-full md:w-auto flex flex-wrap items-center gap-3 md:shrink-0 pt-4 md:pt-0 border-t border-white/5 md:border-0">
-                    <div className="flex flex-col items-center px-4 py-2 rounded-2xl bg-white/5 border border-white/5">
+                  {/* Right: Platform + ATS + View + Status */}
+                  <div className="w-full md:w-auto flex flex-wrap items-center gap-4 md:shrink-0 pt-4 md:pt-0 border-t border-white/5 md:border-0 h-full">
+                    {/* Platform Badge */}
+                    <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border ${PLATFORM_CONFIG[app.platform || "LinkedIn"]?.bg} ${PLATFORM_CONFIG[app.platform || "LinkedIn"]?.text} ${PLATFORM_CONFIG[app.platform || "LinkedIn"]?.border}`}>
+                       {app.platform || "LinkedIn"}
+                    </span>
+
+                    {/* ATS Score */}
+                    <div className="flex flex-col items-center px-3 py-1.5 rounded-2xl bg-white/5 border border-white/5 min-w-[80px]">
                        <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mb-0.5">ATS Match</span>
-                       <span className={`text-sm font-bold ${app.atsScore && app.atsScore > 75 ? "text-emerald-400" : "text-teal-400"}`}>
+                       <span className={`text-lg font-black ${app.atsScore && app.atsScore > 75 ? "text-emerald-400" : "text-teal-400"}`}>
                          {app.atsScore !== undefined ? `${app.atsScore}%` : "N/A"}
                        </span>
                     </div>
@@ -217,12 +225,12 @@ export default function ApplicationsPage() {
                         className="p-3 rounded-2xl bg-zinc-950 border border-white/5 text-zinc-500 hover:text-white hover:border-white/20 transition-all"
                         title="View Job Post"
                       >
-                        <ExternalLink size={18} />
+                        <ExternalLink size={20} />
                       </a>
                     )}
                     
-                    <div className={`flex items-center gap-2 px-4 py-3 rounded-2xl font-bold text-xs uppercase tracking-widest border transition-all ${STATUS_CONFIG[app.status]?.bg} ${STATUS_CONFIG[app.status]?.text} border-transparent group-hover:border-current/10`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${STATUS_CONFIG[app.status]?.dot} animate-pulse`} />
+                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-xl font-bold text-[10px] uppercase tracking-widest border transition-all ${STATUS_CONFIG[app.status]?.bg} ${STATUS_CONFIG[app.status]?.text} border-transparent group-hover:border-current/10`}>
+                      <span className={`w-1.2 h-1.2 rounded-full ${STATUS_CONFIG[app.status]?.dot} animate-pulse`} />
                       {app.status}
                     </div>
                   </div>
